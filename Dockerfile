@@ -1,16 +1,16 @@
-FROM centos:latest
+FROM amazonlinux:2
 
 WORKDIR /opt
 
-RUN yum -y update
-RUN yum -y install epel-release
-RUN yum -y install git python2-pip python-devel httpd mod_wsgi mysql-devel gcc MySQL-python memcached
+RUN amazon-linux-extras -y install epel
+RUN yum -y install git python2-pip python-devel httpd mod_wsgi mysql-devel gcc MySQL-python memcached libxslt-devel libxml2-devel
 RUN pip install --upgrade setuptools
+RUN pip install --upgrade pip
+
 RUN git clone https://github.com/lhalam/EcoMap.git
 RUN chown -R apache:apache ./EcoMap
-RUN pip install --upgrade pip
 COPY requirements.txt ./EcoMap/
-RUN pip install -r ./EcoMap/requirements.txt
+RUN pip install --ignore-installed -r requirements.txt
 COPY ./configs/* ./EcoMap/ecomap/etc/
 COPY ./httpd_configs/httpd.conf /etc/httpd/conf/
 COPY ./httpd_configs/ecomap.conf /etc/httpd/conf.d/ecomap.conf
